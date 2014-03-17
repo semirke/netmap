@@ -1336,7 +1336,7 @@ start_threads(struct glob_arg *g)
 
 	    if (g->dev_type == DEV_NETMAP) {
 		struct nm_desc nmd = *g->nmd; /* copy, we overwrite ringid */
-
+		nmd.self = &nmd;
 		if (g->nthreads > 1) {
 			if (nmd.req.nr_flags != NR_REG_ALL_NIC) {
 				D("invalid nthreads mode %d", nmd.req.nr_flags);
@@ -1352,7 +1352,7 @@ start_threads(struct glob_arg *g)
 		/* register interface. Override ifname and ringid etc. */
 
 		t->nmd = nm_open(t->g->ifname, NULL, g->nmd_flags |
-			NM_OPEN_IFNAME | NM_OPEN_NO_MMAP, g->nmd);
+			NM_OPEN_IFNAME | NM_OPEN_NO_MMAP, &nmd);
 		if (t->nmd == NULL) {
 			D("Unable to open %s: %s",
 				t->g->ifname, strerror(errno));
