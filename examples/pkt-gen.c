@@ -1338,7 +1338,7 @@ start_threads(struct glob_arg *g)
 		struct nm_desc nmd = *g->nmd; /* copy, we overwrite ringid */
 		nmd.self = &nmd;
 		if (g->nthreads > 1) {
-			if (nmd.req.nr_flags != NR_REG_ALL_NIC) {
+			if (nmd.req.nr_flags != NR_REG_SW) {
 				D("invalid nthreads mode %d", nmd.req.nr_flags);
 				continue;
 			}
