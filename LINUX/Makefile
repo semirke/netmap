@@ -101,6 +101,17 @@ build: $(GET_DRIVERS)
 		O_DRIVERS="$(DRIVERS:%.c=%.o)" modules
 	@ls -l `find . -name \*.ko`
 
+install: headers_install
+
+headers_install:
+	@runner=`whoami` ; \
+        if test $$runner != "root" ; \
+        then \
+                echo "Please re-run as root"; \
+        else \
+                echo "Installing headers..." ; \
+                cp -f ../sys/net/* /usr/include/net/ ; \
+        fi \
 
 test:
 	@echo "version $(LIN_VER)"
