@@ -140,6 +140,7 @@ void	   netmap_mem_private_delete(struct netmap_mem_d *);
 #define NETMAP_MEM_IO		0x4	/* the underlying memory is mmapped I/O */
 
 uint32_t netmap_extra_alloc(struct netmap_adapter *, uint32_t *, uint32_t n);
+void netmap_extra_free(struct netmap_adapter *, uint32_t);
 
 
 #endif

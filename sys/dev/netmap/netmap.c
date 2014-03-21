@@ -2201,6 +2201,30 @@ netmap_ioctl(struct cdev *dev, u_long cmd, caddr_t data,
 		}
 
 		break;
+	case NIOCALLOCBUF: {
+
+		struct nmbufreq *nbr = (struct nmbufreq *) data;
+
+		D("requested %d global extra buffers", nbr->num);
+		nbr->num = netmap_extra_alloc(NULL,
+			&(nbr->head), nbr->num);
+		nbr->buf_size = NETMAP_BDG_BUF_SIZE(&nm_mem);
+		nbr->buf_start = nm_mem.pools[NETMAP_IF_POOL].memtotal +
+				nm_mem.pools[NETMAP_RING_POOL].memtotal;
+
+
+		D("got %d global extra buffers",nbr->num);
+		break;
+	}
+	case NIOCFREEBUF: {
+			struct nmbufreq *nbr = (struct nmbufreq *) data;
+			NMG_LOCK();
+			D("freeing global extra buffers");
+			netmap_extra_free(NULL, nbr->head);
+			NMG_UNLOCK();
+			nbr->num = 0;
+		}
+		break;
 
 	case NIOCCONFIG:
 		error = netmap_bdg_config(nmr);
