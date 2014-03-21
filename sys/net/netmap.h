@@ -507,6 +507,13 @@ struct nmreq {
 	uint32_t	spare2[1];
 };
 
+struct nmbufreq {
+	uint32_t num;
+	uint32_t head;
+	u_int buf_size;
+	u_int buf_start;
+};
+
 #define NR_REG_MASK		0xf /* values for nr_flags */
 enum {	NR_REG_DEFAULT	= 0,	/* backward compat, should not be used. */
 	NR_REG_ALL_NIC	= 1,
@@ -527,10 +534,12 @@ enum {	NR_REG_DEFAULT	= 0,	/* backward compat, should not be used. */
  * data structure we pass. We put some spares in the structure
  * to ease compatibility with other versions
  */
-#define NIOCGINFO	_IOWR('i', 145, struct nmreq) /* return IF info */
-#define NIOCREGIF	_IOWR('i', 146, struct nmreq) /* interface register */
-#define NIOCTXSYNC	_IO('i', 148) /* sync tx queues */
-#define NIOCRXSYNC	_IO('i', 149) /* sync rx queues */
+#define NIOCGINFO		_IOWR('i', 145, struct nmreq) /* return IF info */
+#define NIOCREGIF		_IOWR('i', 146, struct nmreq) /* interface register */
+#define NIOCTXSYNC		_IO('i', 148) /* sync tx queues */
+#define NIOCRXSYNC		_IO('i', 149) /* sync rx queues */
+#define NIOCALLOCBUF	_IO('i', 150) /*  alloc extra buffer */
+#define NIOCFREEBUF		_IO('i', 151) /* free extra buffer */
 #endif /* !NIOCREGIF */
 
 
