@@ -1463,7 +1463,7 @@ netmap_set_ringid(struct netmap_priv_d *priv, uint16_t ringid, uint32_t flags)
 		priv->np_txqlast = na->num_tx_rings;
 		priv->np_rxqfirst = 0;
 		priv->np_rxqlast = na->num_rx_rings;
-		ND("%s %d %d", "ALL/PIPE",
+		D("%s %d %d", "ALL/PIPE",
 			priv->np_rxqfirst, priv->np_rxqlast);
 		break;
 	case NR_REG_SW:
@@ -1529,13 +1529,15 @@ netmap_set_ringid(struct netmap_priv_d *priv, uint16_t ringid, uint32_t flags)
 	if (nm_rx_si_user(priv))
 		na->rx_si_users++;
 	if (netmap_verbose) {
-		D("%s: tx [%d,%d) rx [%d,%d) id %d", 
+		D("%s: tx [%d,%d) rx [%d,%d) id %d, %d %d",
 			NM_IFPNAME(na->ifp),
 			priv->np_txqfirst,
 			priv->np_txqlast,
 			priv->np_rxqfirst,
 			priv->np_rxqlast,
-			i);
+			i,
+			na->num_rx_rings,
+			na->num_tx_rings);
 	}
 	return 0;
 }

@@ -872,7 +872,7 @@ ponger_body(void *data)
 				dst = NETMAP_BUF(txring,
 				    txring->slot[txcur].buf_idx);
 				/* copy... */
-				dpkt = (uint16_t *)dst;
+			/*	dpkt = (uint16_t *)dst;
 				spkt = (uint16_t *)src;
 				nm_pkt_copy(src, dst, slot->len);
 				dpkt[0] = spkt[3];
@@ -880,7 +880,12 @@ ponger_body(void *data)
 				dpkt[2] = spkt[5];
 				dpkt[3] = spkt[0];
 				dpkt[4] = spkt[1];
-				dpkt[5] = spkt[2];
+				dpkt[5] = spkt[2];*/
+				int tmp = txring->slot[txcur].buf_idx;
+				txring->slot[txcur].buf_idx = slot->buf_idx;
+				slot->buf_idx = tmp;
+				txring->slot[txcur].flags |= NS_BUF_CHANGED;
+				slot->flags |= NS_BUF_CHANGED;
 				txring->slot[txcur].len = slot->len;
 				/* XXX swap src dst mac */
 				txcur = nm_ring_next(txring, txcur);
