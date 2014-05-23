@@ -97,7 +97,7 @@
 #define _NET_NETMAP_MEM2_H_
 
 
-#define NETMAP_BUF_MAX_NUM	20*4096*2	/* large machine */
+#define NETMAP_BUF_MAX_NUM	80*4096*2	/* large machine */
 
 #define NETMAP_POOL_MAX_NAMSZ	32
 

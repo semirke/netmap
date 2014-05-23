@@ -1441,7 +1441,7 @@ static int
 netmap_set_ringid(struct netmap_priv_d *priv, uint16_t ringid, uint32_t flags)
 {
 	struct netmap_adapter *na = priv->np_na;
-	u_int j, i = ringid & NETMAP_RING_MASK;
+	u_int j, s, i = ringid & NETMAP_RING_MASK;
 	u_int reg = flags & NR_REG_MASK;
 
 	if (reg == NR_REG_DEFAULT) {
@@ -1482,22 +1482,42 @@ netmap_set_ringid(struct netmap_priv_d *priv, uint16_t ringid, uint32_t flags)
 			priv->np_rxqfirst, priv->np_rxqlast);
 		break;
 	case NR_REG_ONE_NIC:
-		if (i >= na->num_tx_rings && i >= na->num_rx_rings) {
-			D("invalid ring id %d", i);
-			return EINVAL;
-		}
-		/* if not enough rings, use the first one */
-		j = i;
-		if (j >= na->num_tx_rings)
-			j = 0;
-		priv->np_txqfirst = j;
-		priv->np_txqlast = j + 1;
-		j = i;
-		if (j >= na->num_rx_rings)
-			j = 0;
-		priv->np_rxqfirst = j;
-		priv->np_rxqlast = j + 1;
-		break;
+			if (i >= na->num_tx_rings && i >= na->num_rx_rings) {
+				D("invalid ring id %d", i);
+				return EINVAL;
+			}
+			/* if not enough rings, use the first one */
+			j = i;
+			if (j >= na->num_tx_rings)
+				j = 0;
+			priv->np_txqfirst = j;
+			priv->np_txqlast = j + 1;
+			j = i;
+			if (j >= na->num_rx_rings)
+				j = 0;
+			priv->np_rxqfirst = j;
+			priv->np_rxqlast = j + 1;
+			break;
+	case NR_REG_MULTIPLE_NIC:
+			j = (i & 0x0f00) >> 8;
+			s = i & 0x00ff;
+			if (s >= na->num_tx_rings || s >= na->num_rx_rings || (s + j > na->num_tx_rings && s + j > na->num_rx_rings)) {
+				D("invalid multiple ring id %d for %d rings", s, j);
+				return EINVAL;
+			}
+
+
+			i = j;
+			if (s + j > na->num_tx_rings)
+				i = na->num_tx_rings - s;
+			priv->np_txqfirst = s;
+			priv->np_txqlast = s + i;
+			i = j;
+			if (s + j > na->num_rx_rings)
+				i = na->num_rx_rings - s;
+			priv->np_rxqfirst = s;
+			priv->np_rxqlast = s + i;
+			break;
 	default:
 		D("invalid regif type %d", reg);
 		return EINVAL;
