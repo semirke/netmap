@@ -505,8 +505,8 @@ struct nmbufreq {
 	uint32_t num;
 	uint32_t head;
 	u_int buf_size;
-	void* buf_start;
-	void* buf_end;
+	u_int buf_start;
+	u_int buf_end;
 };
 
 #define NR_REG_MASK		0xf /* values for nr_flags */
