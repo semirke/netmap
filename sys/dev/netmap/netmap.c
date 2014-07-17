@@ -2228,12 +2228,9 @@ netmap_ioctl(struct cdev *dev, u_long cmd, caddr_t data,
 		D("requested %d global extra buffers", nbr->num);
 		nbr->num = netmap_extra_alloc(NULL,
 			&(nbr->head), nbr->num);
-		nbr->buf_size = NETMAP_BDG_BUF_SIZE(&nm_mem);
-		nbr->buf_start = nm_mem.pools[NETMAP_IF_POOL].memtotal +
-				nm_mem.pools[NETMAP_RING_POOL].memtotal;
-		nbr->buf_end = nm_mem.pools[NETMAP_IF_POOL].memtotal +
-						nm_mem.pools[NETMAP_RING_POOL].memtotal +
-						nm_mem.pools[NETMAP_BUF_POOL].memtotal;
+		nbr->buf_size = netmap_mem_get_bufsize(&nm_mem);
+		nbr->buf_start = netmap_mem_get_bufstart(&nm_mem);
+		nbr->buf_end = netmap_mem_get_bufstart(&nm_mem);
 
 		D("got %d global extra buffers",nbr->num);
 		break;

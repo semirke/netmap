@@ -120,6 +120,8 @@ extern struct netmap_mem_d nm_mem;
 struct lut_entry* netmap_mem_get_lut(struct netmap_mem_d *);
 u_int      netmap_mem_get_buftotal(struct netmap_mem_d *);
 size_t     netmap_mem_get_bufsize(struct netmap_mem_d *);
+u_int      netmap_mem_get_bufstart(struct netmap_mem_d *nmd);
+u_int      netmap_mem_get_bufend(struct netmap_mem_d *nmd);
 vm_paddr_t netmap_mem_ofstophys(struct netmap_mem_d *, vm_ooffset_t);
 int	   netmap_mem_finalize(struct netmap_mem_d *);
 int 	   netmap_mem_init(void);

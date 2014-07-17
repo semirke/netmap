@@ -54,7 +54,7 @@ __FBSDID("$FreeBSD: head/sys/dev/netmap/netmap.c 241723 2012-10-19 09:41:45Z gle
 #include <dev/netmap/netmap_kern.h>
 #include "netmap_mem2.h"
 
-#define NETMAP_BUF_MAX_NUM	20*4096*2	/* large machine */
+#define NETMAP_BUF_MAX_NUM	80*4096*2	/* large machine */
 
 #define NETMAP_POOL_MAX_NAMSZ	32
 
@@ -152,6 +152,20 @@ netmap_mem_get_buftotal(struct netmap_mem_d *nmd)
 {
 	return nmd->pools[NETMAP_BUF_POOL].objtotal;
 }
+
+u_int
+netmap_mem_get_bufstart(struct netmap_mem_d *nmd)
+{
+        return nmd->pools[NETMAP_IF_POOL].memtotal + nmd->pools[NETMAP_RING_POOL].memtotal;
+}
+
+u_int
+netmap_mem_get_bufend(struct netmap_mem_d *nmd)
+{
+        return nmd->pools[NETMAP_IF_POOL].memtotal + nmd->pools[NETMAP_RING_POOL].memtotal + nmd->pools[NETMAP_BUF_POOL].memtotal;
+}
+
+
 
 size_t
 netmap_mem_get_bufsize(struct netmap_mem_d *nmd)
