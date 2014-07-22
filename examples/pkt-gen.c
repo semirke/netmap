@@ -1169,11 +1169,14 @@ receiver_body(void *data)
 	/* unbounded wait for the first packet. */
 	while (!targ->cancel) {  // Allow graceful exit if no packet recevied
 		i = poll(&pfd, 1, 1000);
-		if (i > 0 && !(pfd.revents & POLLERR))
+		if (i > 0 && !(pfd.revents & POLLERR)){
+                	D("Thread %d got packet\n", targ->me);
 			break;
-		RD(1, "waiting for initial packets, poll returns %d %d",
-			i, pfd.revents);
+                }
+		RD(1, "waiting for initial packets, poll returns %d %d @thread: %d ",
+			i, pfd.revents, targ->me);
 	}
+
 
 	/* main loop, exit after 1s silence */
 	clock_gettime(CLOCK_REALTIME_PRECISE, &targ->tic);
@@ -1364,6 +1367,7 @@ start_threads(struct glob_arg *g)
 
 		t->nmd = nm_open(t->g->ifname, NULL, g->nmd_flags |
 			NM_OPEN_IFNAME | NM_OPEN_NO_MMAP, &nmd);
+			
 		if (t->nmd == NULL) {
 			D("Unable to open %s: %s",
 				t->g->ifname, strerror(errno));
@@ -1820,9 +1824,14 @@ main(int arc, char **argv)
 	devqueues = g.nmd->req.nr_rx_rings;
 
 	/* validate provided nthreads. */
-	if (g.nthreads < 1 || g.nthreads > devqueues) {
+	if (g.nthreads < 1 || g.nthreads != devqueues) {
 		D("bad nthreads %d, have %d queues", g.nthreads, devqueues);
 		// continue, fail later
+	}
+	
+	if (g.nthreads >1 && g.nthreads != devqueues) {
+		D("no. of threads must equal to hw queues: %d, have %d queues", g.nthreads, devqueues);
+		goto out;
 	}
 
 	if (verbose) {
