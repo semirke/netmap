@@ -1167,7 +1167,7 @@ receiver_body(void *data)
 		goto quit;
 
 	/* unbounded wait for the first packet. */
-	for (;;) {
+	while (!targ->cancel) {  // Allow graceful exit if no packet recevied
 		i = poll(&pfd, 1, 1000);
 		if (i > 0 && !(pfd.revents & POLLERR))
 			break;
@@ -1342,6 +1342,12 @@ start_threads(struct glob_arg *g)
 	    if (g->dev_type == DEV_NETMAP) {
 		struct nm_desc nmd = *g->nmd; /* copy, we overwrite ringid */
 		nmd.self = &nmd;
+		if (g->nthreads == 1){
+		        // As now we defaulted to NR_REG_SW, there is no NIC opened
+		        // We have only one thread, let it register all NICs. 
+			nmd.req.nr_flags = NR_REG_ALL_NIC;
+                }
+		
 		if (g->nthreads > 1) {
 			if (nmd.req.nr_flags != NR_REG_SW) {
 				D("invalid nthreads mode %d", nmd.req.nr_flags);
