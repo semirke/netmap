@@ -8,7 +8,7 @@ LIBNETMAP =
 CLEANFILES = $(PROGS) *.o
 NO_MAN=
 CFLAGS = -O2 -pipe
-CFLAGS += -Werror -Wall -Wunused-function
+CFLAGS +=  -Wunused-function
 CFLAGS += -I ../sys # -I/home/luigi/FreeBSD/head/sys -I../sys
 CFLAGS += -Wextra
 ifdef WITH_PCAP
